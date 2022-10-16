@@ -2,6 +2,8 @@
 #include <iostream>
 #include <stdlib.h>
 #include <math.h>
+#include <fstream>
+#include <string> 
 
 using namespace std;
 
@@ -11,6 +13,89 @@ double AccurateLocation(double t, double w0, double cL, double L, double Q);
 double Euler(double tau, double x, double w0, double cL, double L, double Q);
 double RungeKuttaFourthOrder(double tau, double x, double w0, double cL, double L, double Q);
 
+/*
+int main()
+{
+	double u0 = 0.1, a = 0, b = 100;
+	
+	cout << "Euler:" << endl;
+	for (double tau = 2; tau >= 0.5; tau /= 2)
+	{
+		cout << "tau= " << tau << endl;
+		double t = 0, err = 0, x_E = 0;
+		x_E = AccurateLocation(t, u0, a);
+
+		string site = "tau=" + to_string(tau);
+		ofstream OutFile("Result\\Euler\\" + site + ".txt");
+		OutFile << "tau=" << tau << endl;
+		OutFile << "t=" << t << " \t" << "x=" << a << " \t" << "x_E=" << x_E << " \t" << "Err=" << err << endl;
+		// printf("t=%.5lf\t x=%.5lf\t x_E=%.5lf\t err=%.5lf\t\n", t, a, AccurateLocation(t, u0, a), 0);
+
+		for (double x = a; x_E < b;)
+		{
+			x = Euler(tau, u0, x);
+			t += tau;
+			x_E = AccurateLocation(t, u0, a);
+			if (abs(x - x_E) > err)
+			{
+				err = abs(x - x_E);
+				if (err<1e-7)
+				{
+					err = 0;
+				}
+			}
+			// printf("t=%.5lf\t x=%.5lf\t x_E=%.5lf\t err=%.5lf\t", t, x, AccurateLocation(t, u0, a), abs(x-AccurateLocation(t, u0, a)));
+			// cout << endl;
+			OutFile << "t=" << t << " \t" << "x=" << x << " \t" << "x_E=" << x_E << " \t" << "Err=" << err << endl;
+		}
+		printf("tau=%.5lf\t err=%.5lf\t", tau, err);
+		cout << endl;
+
+		OutFile.close();
+	}
+
+	cout << "RungeKutta:" << endl;
+	for (double tau = 2; tau >= 0.5; tau /= 2)
+	{
+		cout << "tau= " << tau << endl;
+		double t = 0, err = 0, x_E = 0;
+		x_E = AccurateLocation(t, u0, a);
+
+		string site = "tau=" + to_string(tau);
+		ofstream OutFile("Result\\RungeKutta\\" + site + ".txt");
+		OutFile << "tau=" << tau << endl;
+		OutFile << "t=" << t << " \t" << "x=" << a << " \t" << "x_E=" << x_E << " \t" << "Err=" << err << endl;
+		// printf("t=%.5lf\t x=%.5lf\t x_E=%.5lf\t err=%.5lf\t\n", t, a, AccurateLocation(t, u0, a), 0);
+		
+		for (double x = a; x_E < b;)
+		{
+			x = RungeKuttaFourthOrder(tau, u0, x);
+			t += tau;
+			x_E = AccurateLocation(t, u0, a);
+			if (abs(x - x_E) > err)
+			{
+				err = abs(x - x_E);
+				if (err<1e-7)
+				{
+					err = 0;
+				}
+			}
+			// printf("t=%.5lf\t x=%.5lf\t x_E=%.5lf\t err=%.5lf\t", t, x, AccurateLocation(t, u0, a), abs(x - AccurateLocation(t, u0, a)));
+			// cout << endl;
+			OutFile << "t=" << t << " \t" << "x=" << x << " \t" << "x_E=" << x_E << " \t" << "Err=" << err << endl;
+		}
+		printf("tau=%.5lf\t err=%.5lf\t", tau, err);
+		cout << endl;
+
+		OutFile.close();
+	}
+
+	system("pause");
+
+	return 0;
+}
+*/
+
 int main()
 {
 	double u0 = 0.1, a = 0, b = 100, Q = 0.1, w0 = 0.1, cL = 0.2, L = 100;
@@ -19,38 +104,58 @@ int main()
 	for (double tau = 2; tau >= 0.5; tau /= 2)
 	{
 		cout << "tau= " << tau << endl;
-		double t = 0, err = 0;
+		double t = 0, err = 0, x_E =0;
+		x_E = AccurateLocation(t, w0, cL, L, Q);
+
+		string site = "tau=" + to_string(tau);
+		ofstream OutFile("Result\\Euler\\" + site + ".txt");
+		OutFile << "tau=" << tau << endl;
+		OutFile << "t=" << t << " \t" << "x=" << a << " \t" << "x_E=" << x_E << " \t" << "Err=" << err << endl;
 		// printf("t=%.5lf\t x_E=%.5lf\t x=%.5lf\t err=%.5lf\t\n", t, a, AccurateLocation(t, w0, cL, L, Q), 0);
-		for (double x = a; x < b;)
+		for (double x = a; x_E < b;)
 		{
 			x = Euler(tau, x, w0, cL, L, Q);
 			t += tau;
-			if (err < abs(AccurateLocation(t, w0, cL, L, Q) - x))
-				err = abs(AccurateLocation(t, w0, cL, L, Q) - x);
-			 printf("t=%.5lf\t x_E=%.5lf\t x=%.5lf\t err=%.5lf\t", t, x, AccurateLocation(t, w0, cL, L, Q), abs(AccurateLocation(t, w0, cL, L, Q) - x));
-			 cout << endl;
+			x_E = AccurateLocation(t, w0, cL, L, Q);
+			if (err < abs(x_E - x))
+				err = abs(x_E - x);
+			// printf("t=%.5lf\t x_E=%.5lf\t x=%.5lf\t err=%.5lf\t", t, x, AccurateLocation(t, w0, cL, L, Q), abs(AccurateLocation(t, w0, cL, L, Q) - x));
+			// cout << endl;
+			OutFile << "t=" << t << " \t" << "x=" << a << " \t" << "x_E=" << x_E << " \t" << "Err=" << err << endl;
 		}
 		printf("t=%.5lf\t err=%.7lf\t", t, err);
 		cout << endl;
+
+		OutFile.close();
 	}
 
 	cout << "RungeKutta:" << endl;
 	for (double tau = 2; tau >= 0.5; tau /= 2)
 	{
 		cout << "tau= " << tau << endl;
-		double t = 0, err = 0;
-		// printf("t=%.5lf\t x_R=%.5lf\t x=%.5lf\t err=%.5lf\t\n", t, a, AccurateLocation(t, w0, cL, L, Q), 0);
-		for (double x = a; x < b;)
+		double t = 0, err = 0, x_E = 0;
+		x_E = AccurateLocation(t, w0, cL, L, Q);
+
+		string site = "tau=" + to_string(tau);
+		ofstream OutFile("Result\\RungeKutta\\" + site + ".txt");
+		OutFile << "tau=" << tau << endl;
+		OutFile << "t=" << t << " \t" << "x=" << a << " \t" << "x_E=" << x_E << " \t" << "Err=" << err << endl;
+		// printf("t=%.5lf\t x_E=%.5lf\t x=%.5lf\t err=%.5lf\t\n", t, a, AccurateLocation(t, w0, cL, L, Q), 0);
+		for (double x = a; x_E < b;)
 		{
 			x = RungeKuttaFourthOrder(tau, x, w0, cL, L, Q);
 			t += tau;
-			if (err < abs(AccurateLocation(t, w0, cL, L, Q) - x))
-				err = abs(AccurateLocation(t, w0, cL, L, Q) - x);
-			 printf("t=%.5lf\t x_R=%.5lf\t x=%.5lf\t err=%.5lf\t", t, x, AccurateLocation(t, w0, cL, L, Q), abs(AccurateLocation(t, w0, cL, L, Q) - x));
-			 cout << endl;
+			x_E = AccurateLocation(t, w0, cL, L, Q);
+			if (err < abs(x_E - x))
+				err = abs(x_E - x);
+			// printf("t=%.5lf\t x_E=%.5lf\t x=%.5lf\t err=%.5lf\t", t, x, AccurateLocation(t, w0, cL, L, Q), abs(AccurateLocation(t, w0, cL, L, Q) - x));
+			// cout << endl;
+			OutFile << "t=" << t << " \t" << "x=" << a << " \t" << "x_E=" << x_E << " \t" << "Err=" << err << endl;
 		}
 		printf("t=%.5lf\t err=%.7lf\t", t, err);
 		cout << endl;
+
+		OutFile.close();
 	}
 
 	system("pause");

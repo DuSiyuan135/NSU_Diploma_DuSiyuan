@@ -103,7 +103,7 @@ int main()
 	cout << "Euler:" << endl;
 	for (double tau = 2; tau >= 0.5; tau /= 2)
 	{
-		cout << "tau= " << tau << endl;
+		cout << "tau= " << tau << "\t";
 		double t = 0, err = 0, x_E =0;
 		x_E = AccurateLocation(t, w0, cL, L, Q);
 
@@ -123,7 +123,7 @@ int main()
 			// cout << endl;
 			OutFile << "t=" << t << " \t" << "x=" << a << " \t" << "x_E=" << x_E << " \t" << "Err=" << err << endl;
 		}
-		printf("t=%.5lf\t err=%.7lf\t", t, err);
+		printf("err=%.7lf\t t=%.5lf\t", err, t);
 		cout << endl;
 
 		OutFile.close();
@@ -132,7 +132,7 @@ int main()
 	cout << "RungeKutta:" << endl;
 	for (double tau = 2; tau >= 0.5; tau /= 2)
 	{
-		cout << "tau= " << tau << endl;
+		cout << "tau= " << tau << "\t";
 		double t = 0, err = 0, x_E = 0;
 		x_E = AccurateLocation(t, w0, cL, L, Q);
 
@@ -152,7 +152,7 @@ int main()
 			// cout << endl;
 			OutFile << "t=" << t << " \t" << "x=" << a << " \t" << "x_E=" << x_E << " \t" << "Err=" << err << endl;
 		}
-		printf("t=%.5lf\t err=%.7lf\t", t, err);
+		printf("err=%.7lf\t t=%.5lf\t", err, t);
 		cout << endl;
 
 		OutFile.close();
